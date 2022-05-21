@@ -47,7 +47,14 @@
                 </template>
             </el-table-column>
         </el-table>
-        <PageVue @sizeChange="setMaxSzieOnePage" @currentChange="setCurrentPage" :total="total" :current_page="currentPage" v-if="isSearch === 0"></PageVue>
+        <PageVue
+                @sizeChange="setMaxSzieOnePage"
+                @currentChange="setCurrentPage"
+                :total="total"
+                :current_page="currentPage"
+                :page_size="maxSzieOnePage"
+                v-if="isSearch === 0">
+        </PageVue>
         <!--     编辑框   -->
         <el-dialog :title="title"
                    width="20%"
@@ -87,8 +94,8 @@
         methods:{
             // 获取角色列表
             getRoleList(){
-                this.currentPage = 1;
-                this.maxSzieOnePage = 2;
+                // this.currentPage = 1;
+                // this.maxSzieOnePage = 2;
                 this.$axios.get("/roles/list/"+this.currentPage+"/"+this.maxSzieOnePage).then((res)=>{
                     console.log(res);
                     this.tableData = [];
@@ -159,6 +166,7 @@
                             this.tableData = [];
                             this.roleForm = {};
                             this.getRoleList();
+                            // this.setMaxSzieOnePage(this.maxSzieOnePage);
                         }
                     }).catch((error)=>{
                         console.log(error);
@@ -190,7 +198,8 @@
             setMaxSzieOnePage(val){
                 this.tableData = [];
                 this.maxSzieOnePage = val;
-                this.$axios.get("/roles/list/1/"+this.maxSzieOnePage).then((res)=>{
+                this.currentPage = 1;
+                this.$axios.get("/roles/list/"+this.currentPage+"/"+this.maxSzieOnePage).then((res)=>{
                     console.log(res);
                     if(res.data.code === 2000){
                         let list = res.data.data.list;
